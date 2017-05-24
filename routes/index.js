@@ -17,7 +17,9 @@ router.get('/author', function(req, res, next) {
 router.get('/ayuda', function(req, res, next) {
     res.render('ayuda');
 });
-
+// Pagina para jugar
+router.get('/quizzes/randomplay',quizController.randomPlay);
+router.get('/quizzes/randomcheck/:quizId(\\d+)',quizController.randomCheck);
 // Autoload de rutas que usen :quizId
 router.param('quizId', quizController.load);
 
