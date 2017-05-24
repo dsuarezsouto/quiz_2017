@@ -190,7 +190,7 @@ exports.check = function (req, res, next) {
 exports.randomPlay= function (req, res, next){
     var session=req.session;
 
-    if(!session.contador /*|| session.preguntas.length>session.contador*/){
+    if(!session.contador || session.preguntas.length>session.contador){
         session.contador=0;
         session.preguntas=[];
     }
