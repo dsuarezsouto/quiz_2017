@@ -246,16 +246,13 @@ exports.randomCheck= function (req, res, next){
     models.Quiz.findById(id)
         .then(function (pregunta) {
             var resultado=respuesta.toLocaleLowerCase().trim()===pregunta.answer.toLocaleLowerCase().trim();
-            var score;
             if(resultado){
                 session.contador++;
-                score=session.contador;
             }else{
-                score=session.contador;
                 session.contador=0;
             }
             res.render('quizzes/random_result', {
-                score:score,
+                score:session.contador,
                 answer:respuesta,
                 result:resultado
             });
