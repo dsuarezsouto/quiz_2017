@@ -222,3 +222,79 @@ exports.check = function (req, res, next) {
         answer: answer
     });
 };
+exports.randomPlay= function (req, res, next){
+    var session=req.session;
+
+    if(!session.contador || session.preguntas.length>session.contador){
+        session.contador=0;
+        session.preguntas=[];
+    }
+
+    models.Quiz.count()
+        .then(function(cuenta){
+            console.log("numero_quizzes:",cuenta);
+            console.log("score:",session.contador);
+            //Todas las preguntas contestadas
+            if(session.contador===cuenta){
+                res.render('quizzes/random_nomore',{
+                    score: session.contador
+                });
+            }
+            var index=1;
+            var tmp;
+            //Genero un id no contestado
+            while(index>=0 &&session.contador!==cuenta){
+                tmp=Math.floor((Math.random()*cuenta))+1;
+                index=session.preguntas.indexOf(tmp);
+                /**contestada=false;
+                 for(var i=0;i<session.preguntas;i++){
+                   if(session.preguntas[i]===tmp){
+                       contestada=true;
+                   }
+               }*/
+                console.log("id:",tmp);
+                console.log("indice:",index);
+            }
+
+            session.preguntas.push(tmp);
+            return models.Quiz.findById(tmp);
+
+        })
+        .then(function (pregunta) {
+            console.log(session.preguntas);
+            res.render('quizzes/random_play',{
+                score: session.contador,
+                quiz: pregunta
+            });
+        })
+        .catch(function (error) {
+            req.flash('error','Error del tipo: ',error.message);
+            next(error);
+        });
+};
+
+exports.randomCheck= function (req, res, next){
+    var session=req.session;
+    var respuesta=req.query.answer || '';
+
+    var id= req.quiz.id;
+    models.Quiz.findById(id)
+        .then(function (pregunta) {
+            var resultado=respuesta.toLocaleLowerCase().trim()===pregunta.answer.toLocaleLowerCase().trim();
+            if(resultado){
+                session.contador++;
+            }else{
+                session.contador=0;
+            }
+            res.render('quizzes/random_result', {
+                score:session.contador,
+                answer:respuesta,
+                result:resultado
+            });
+        })
+        .catch(function (error) {
+            req.flash('error','Error del tipo: ',error.message);
+            next(error);
+        });
+
+};
