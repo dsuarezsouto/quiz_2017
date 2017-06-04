@@ -11,7 +11,7 @@
 
             <li>
                 <%= tip.text %>
-                <span id="autor"><small>by(<%= quiz.Tips[i].Author.username%>)</small> </span>
+                <span id="autor">by(<%= quiz.Tips[i].Author.username%>)</span>
 
                 <% if (!accepted && (isAdmin || isQuizAuthor)) { %>
 
