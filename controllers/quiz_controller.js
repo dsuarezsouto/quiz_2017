@@ -282,7 +282,7 @@ exports.randomCheck= function (req, res, next){
         .then(function (pregunta) {
             var resultado=respuesta.toLocaleLowerCase().trim()===pregunta.answer.toLocaleLowerCase().trim();
             if(resultado){
-                session.contador++;
+                session.contador= session.contador++ || 1;
             }else{
                 session.contador=0;
             }
