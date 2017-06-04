@@ -4,28 +4,32 @@
     <% for (var i in tips) { %>
         <% var tip = tips[i]; %>
 
-        <li>
+        <% var accepted = tip.accepted; %>
+        <% var isAdmin = session.user && session.user.isAdmin; %>
+        <% var isQuizAuthor = session.user && tip.AuthorId === session.user.id; %>
+        <% if (accepted || isQuizAuthor||isAdmin) { %>
 
-            <% if (tip.accepted ||
-                    (session.user && (session.user.isAdmin || (quizAuthorId && quizAuthorId === session.user.id)))) { %>
-
+            <li>
                 <%= tip.text %>
+                <span id="autor"><small>by(<%= quiz.Tips[i].Author.username%>)</small> </span>
 
-            <% } %>
+                <% if (!accepted && (isAdmin || isQuizAuthor)) { %>
 
-            <% if (!tip.accepted &&
-                    (session.user && (session.user.isAdmin || (quizAuthorId && quizAuthorId === session.user.id)))) { %>
+                    <a href="/quizzes/<%= quizId %>/tips/<%= tip.id %>/accept?_method=PUT">
+                        <button>Aceptar</button>
+                    </a>
 
-                <a href="/quizzes/<%= quizId %>/tips/<%= tip.id %>/accept?_method=PUT"><button>Aceptar</button></a>
+                <% } %>
 
-            <% } %>
+                <% if (isAdmin || isQuizAuthor) { %>
 
-            <% if ((session.user && (session.user.isAdmin || (quizAuthorId && quizAuthorId === session.user.id)))) { %>
+                    <a href="/quizzes/<%= quizId %>/tips/<%= tip.id %>?_method=DELETE">
+                        <button>Borrar</button>
+                    </a>
 
-                <a href="/quizzes/<%= quizId %>/tips/<%= tip.id %>?_method=DELETE"><button>Borrar</button></a>
+                <% } %>
+            </li>
+        <% } %>
 
-            <% } %>
-
-        </li>
     <% } %>
 </ul>
