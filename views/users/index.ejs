@@ -32,6 +32,20 @@
     </tr>
     <%  } %>
 </table>
+<%if(session.user){%>
+<div class="right">
+            <table>
+                <p><b>Usuarios concectados:</b></p>
+                <%for(var i in sesiones){%>
+                    <tr>
+                        <td>
+                            <%=sesiones[i].username%>
+                        </td>
+                    </tr>
+                <%}%>
+            </table>
+        </div>
+<%}%>
 
 
 <% if (session.user) { %>

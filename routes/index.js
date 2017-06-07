@@ -61,7 +61,7 @@ router.delete('/session', sessionController.destroy); // destruir sesión
 
 // Definición de rutas de cuenta
 router.get('/users',
-    sessionController.loginRequired,
+    sessionController.loginRequired,sessionController.index,
     userController.index);   // listado usuarios
 router.get('/users/:userId(\\d+)',
     sessionController.loginRequired,

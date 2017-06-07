@@ -8,10 +8,13 @@ var session = require('express-session');
 var partials = require('express-partials');
 var flash = require('express-flash');
 var methodOverride = require('method-override');
-
+//var io= require('socket.io');
 var index = require('./routes/index');
 
+var models=require("./models");
 var app = express();
+
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

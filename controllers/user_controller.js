@@ -24,7 +24,7 @@ exports.load = function (req, res, next, userId) {
 
 // GET /users
 exports.index = function (req, res, next) {
-
+    var sesiones=res.sesiones;
     models.User.count()
     .then(function (count) {
 
@@ -48,7 +48,7 @@ exports.index = function (req, res, next) {
         return models.User.findAll(findOptions);
     })
     .then(function (users) {
-        res.render('users/index', {users: users});
+        res.render('users/index', {users: users,sesiones:sesiones});
     })
     .catch(function (error) {
         next(error);

@@ -4,6 +4,7 @@ var Sequelize = require('sequelize');
 var url = require('url');
 
 
+
 // Si se supera el tiempo de inactividad indicado por esta variable,
 // sin que el usuario solicite nuevas paginas, entonces se cerrara
 // la sesion del usuario.
@@ -20,8 +21,25 @@ exports.deleteExpiredUserSession = function(req, res, next) {
 
     if (req.session.user ) { // Hay login
         if ( req.session.user.expires < Date.now() ) { // Caduco
-            delete req.session.user; // Logout
-            req.flash('info', 'La sesión ha caducado.');
+            models.Session.findById(req.session.user.id)
+                .then(function (session) {
+                    session.destroy()
+                        .then(function () {
+                            delete req.session.user;
+                            req.flash('info', 'La sesión ha caducado.');
+                            res.redirect("/session"); // redirect a login
+                        })
+                        .catch(function (error) {
+                            req.flash('error',"Error al eliminar la sesssion");
+                            res.render('index.ejs');
+                        });
+                })
+                .catch(function (error) {
+                    delete req.session.user;
+                    res.render('index.ejs');
+                });
+           // delete req.session.user; // Logout
+            //req.flash('info', 'La sesión ha caducado.');
         } else { // No caduco. Restaurar la hora de expiracion.
             req.session.user.expires = Date.now() + maxIdleTime;
         }
@@ -133,7 +151,7 @@ exports.new = function(req, res, next) {
 // POST /session   -- Crear la sesion si usuario se autentica
 exports.create = function(req, res, next) {
 
-    var redir = req.body.redir || '/'
+    var redir = req.body.redir || '/';
 
     var login     = req.body.login;
     var password  = req.body.password;
@@ -151,6 +169,13 @@ exports.create = function(req, res, next) {
                 expires: Date.now() + maxIdleTime
             };
 
+            var session=models.Session.build({
+                id:user.id,
+                username:user.username,
+                isAdmin:user.isAdmin
+            });
+            session.save({fields: ["id", "username", "isAdmin"]});
+            req.flash('success',"Sesion creada con exito");
             res.redirect(redir); // redirección a redir
         } else {
             req.flash('error', 'La autenticación ha fallado. Reinténtelo otra vez.');
@@ -168,8 +193,41 @@ exports.create = function(req, res, next) {
 
 // DELETE /session   -- Destruir sesion
 exports.destroy = function(req, res, next) {
+    models.Session.findById(req.session.user.id)
+        .then(function (session) {
+            session.destroy()
+                .then(function () {
+                    delete req.session.user;
+                    req.flash('success',"Sesion borrada con exito");
+                    res.redirect("/session"); // redirect a login
+                })
+                .catch(function (error) {
+                    req.flash('error',"Error al eliminar la sesssion");
+                    res.redirect('/');
+                });
+        })
+        .catch(function (error) {
+            delete req.session.user;
+            req.flash('error',"Error al encontrar la session");
+            res.redirect('/');
+        });
 
-    delete req.session.user;
+    //delete req.session.user;
+    /*res.redirect("/session");*/ // redirect a login
+};
 
-    res.redirect("/session"); // redirect a login
+exports.index=function (req,res,next) {
+
+        models.Session.findAll()
+
+            .then(function (sessions) {
+                res.sesiones=sessions;
+                next();
+            })
+            .catch(function (error) {
+                req.flash('error',"Error al intentar cargar las sesiones");
+                res.redirect('/');
+            });
+
+
 };
