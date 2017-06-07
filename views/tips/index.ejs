@@ -6,7 +6,7 @@
 
         <% var accepted = tip.accepted; %>
         <% var isAdmin = session.user && session.user.isAdmin; %>
-        <% var isQuizAuthor = session.user && tip.AuthorId === session.user.id; %>
+        <% var isQuizAuthor = session.user && tip.Author&& tip.Author.id &&  tip.AuthorId=== session.user.id; %>
         <% if (accepted || isQuizAuthor||isAdmin) { %>
 
             <li>
