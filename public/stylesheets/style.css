@@ -229,12 +229,19 @@ a {
     width: 100%;
     overflow-y: auto;
     overflow-x: hidden;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    padding: 5px 10px;
+    nth-child(odd) background: #eee;
+    margin-bottom: 40px ;
 }
 .mensaje_propio{
     text-align: right;
+    margin-right: 15px;
 }
-.diconnected{
+.conectado{
     text-align: center;
     background: white;
-    font: 8px "Lucida Grande", Helvetica, Arial, sans-serif;
+    font: 10px "Lucida Grande", Helvetica, Arial, sans-serif;
 }

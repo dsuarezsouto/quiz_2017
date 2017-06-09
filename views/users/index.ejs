@@ -66,10 +66,7 @@
 
 
     <style>
-        #messages { list-style-type: none; margin: 0; padding: 0; }
-        #messages li { padding: 5px 10px; }
-        #messages li:nth-child(odd) { background: #eee; }
-        #messages { margin-bottom: 40px }
+
     </style>
 
     <script>
@@ -82,6 +79,14 @@
             socket.on('chat message', function(msg){
                 $('#messages').append($('<li>').text(msg));
             });*/
+            var username="<%=session.user.username%>";
+            socket.emit('new',username);
+            function sendNew() {
+
+                socket.emit('new',username);
+                username.val('');
+                return false;
+            }
             function sendMsg(e) {
                 var msg={
                     author:"<%=session.user.username%>",
@@ -95,8 +100,14 @@
                 if(msg.author==="<%=session.user.username%>"){
                     $('#messages').append($('<li class="mensaje_propio">').text(msg.text));
                 }else {
-                    $('#messages').append($('<li class="mensaje_ajeno" >').text(msg.author+':'+msg.text));
+                    $('#messages').append("<li class='mensaje_ajeno'><strong>"+msg.author+":</strong>"+msg.text+"</li>")/*.text(msg.author+':'+msg.text))*/;
                 }
+            });
+            socket.on('nuevo',function (username) {
+                if("<%=session.user.username%>"!==username){
+                    $('#messages').append("<li class='conectado'><strong>"+username +" se ha unido</sctrong></li>")/*.text(username +' se ha unido'))*/;
+                }
+
             });
 
 
