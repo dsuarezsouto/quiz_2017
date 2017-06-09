@@ -10,7 +10,6 @@ function encryptPassword(password, salt) {
 
 module.exports = {
     up: function (queryInterface, Sequelize) {
-
         return queryInterface.bulkInsert('Users', [
             {
                 username: 'admin',
@@ -24,8 +23,7 @@ module.exports = {
                 password: encryptPassword('5678', 'bbbb'),
                 salt: 'bbbb',
                 createdAt: new Date(), updatedAt: new Date()
-            }
-        ]);
+            }]);
     },
 
     down: function (queryInterface, Sequelize) {
