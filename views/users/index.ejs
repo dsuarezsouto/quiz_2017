@@ -1,8 +1,9 @@
+<div id="users">
 <h1>
     Usuarios
 </h1>
-
-<table>
+<div id="tabla_users">
+<table >
     <% for (var i in users) { %>
     <tr>
         <td>
@@ -32,10 +33,18 @@
     </tr>
     <%  } %>
 </table>
+    <% if (session.user) { %>
+    <a href="/users/new"><button type="button">Crear usuario</button></a>
+    <%  } %>
+
+</div>
+
+
 <%if(session.user){%>
-<div class="right">
+<div class="tabla_users_conectados">
             <table>
-                <p><b>Usuarios concectados:</b></p>
+
+                <p><b>Usuarios conectados:</b></p>
                 <%for(var i in sesiones){%>
                     <tr>
                         <td>
@@ -44,10 +53,54 @@
                     </tr>
                 <%}%>
             </table>
+</div>
+</div>
+    <div  id="chat">
+
+        <ul id="messages"></ul>
+
+        <form id="caja-mensaje" onsubmit="return sendMsg(this)" action="">
+            <input  type="text" placeholder="Enviar mensaje" id="msg">
+            <input id="enviar_msg" type="submit" value="Enviar">
+        </form>
+
+
+    <style>
+        #messages { list-style-type: none; margin: 0; padding: 0; }
+        #messages li { padding: 5px 10px; }
+        #messages li:nth-child(odd) { background: #eee; }
+        #messages { margin-bottom: 40px }
+    </style>
+
+    <script>
+            var socket = io();
+            /*$('form').submit(function(){
+                socket.emit('chat message', $('#msg').val());
+                $('#msg').val('');
+                return false;
+            });
+            socket.on('chat message', function(msg){
+                $('#messages').append($('<li>').text(msg));
+            });*/
+            function sendMsg(e) {
+                var msg={
+                    author:"<%=session.user.username%>",
+                    text:$('#msg').val()
+                };
+                socket.emit('chat message', msg);
+                $('#msg').val('');
+                return false;
+            }
+            socket.on('messages', function(msg){
+                if(msg.author==="<%=session.user.username%>"){
+                    $('#messages').append($('<li class="mensaje_propio">').text(msg.text));
+                }else {
+                    $('#messages').append($('<li class="mensaje_ajeno" >').text(msg.author+':'+msg.text));
+                }
+            });
+
+
+    </script>
         </div>
 <%}%>
 
-
-<% if (session.user) { %>
-    <a href="/users/new"><button type="button">Crear usuario</button></a>
-<%  } %>

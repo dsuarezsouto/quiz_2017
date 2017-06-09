@@ -29,7 +29,7 @@
     "sequelize": "^3.30.2",
     "sequelize-cli": "^2.6.0",
     "serve-favicon": "~2.3.2",
-    "socket.io": "^2.0.2"
+    "socket.io": "^1.7.3"
   },
   "devDependencies": {
     "sqlite3": "^3.1.8"

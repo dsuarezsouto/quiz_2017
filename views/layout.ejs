@@ -13,6 +13,9 @@
           type='text/css'
           media='only screen and (max-width: 480px)'
           href='/stylesheets/smartphone.css'/>
+    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
 </head>
 <body>
 <div id="page">
@@ -25,7 +28,7 @@
                 <a href="/session">Login</a>
             <% } else { %>
                 <a href="/users/<%= session.user.id %>"><%= session.user.username %></a>
-                <a href="/session?_method=DELETE">Logout</a>
+                <a href="/session?_method=DELETE" >Logout</a>
             <% } %>
         </div>
 
