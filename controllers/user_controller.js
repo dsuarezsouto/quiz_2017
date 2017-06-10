@@ -25,11 +25,7 @@ exports.load = function (req, res, next, userId) {
 // GET /users
 exports.index = function (req, res, next) {
     var sesiones=res.sesiones;
-    if(!req.nuevo){
-        req.nuevo="true";
-    }else{
-        req.nuevo="false";
-    }
+
     models.User.count()
     .then(function (count) {
 
@@ -49,11 +45,10 @@ exports.index = function (req, res, next) {
             limit: items_per_page,
             order: ['username']
         };
-
         return models.User.findAll(findOptions);
     })
     .then(function (users) {
-        res.render('users/index', {users: users,sesiones:sesiones,nuevo:req.nuevo});
+        res.render('users/index', {users: users,sesiones:sesiones});
     })
     .catch(function (error) {
         next(error);

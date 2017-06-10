@@ -64,24 +64,24 @@
             <input id="enviar_msg" type="submit" value="Enviar">
         </form>
 
-
-    <style>
-
-    </style>
-
     <script>
             var socket = io();
-
             var username="<%=session.user.username%>";
-            socket.emit('new',username);
 
+            if(!sessionStorage.conectado){/* Se ha conectado un nuevo usuario */
+                 sendNew();/*Envio evento de nuevo usuario*/
+                sessionStorage.conectado="<%=session.user.username%>";
+            }else{ /* Usuario que ya estaba conectado */
+                sendRecord();/* Envio evento de "solicito historial de mensajes" */
+            }
+
+            /*Funcion local para enviar un evento cada vez que se conecta un nuevo usuario */
             function sendNew() {
-
                 socket.emit('new',username);
-                username.val('');
                 return false;
             }
 
+            /* Funcion local que envia un mensaje al chat cada vez que se pulsa 'Enviar' */
             function sendMsg(e) {
                 var msg={
                     author:"<%=session.user.username%>",
@@ -91,18 +91,30 @@
                 $('#msg').val('');
                 return false;
             }
+            
+            /* Funcion local que envia un evento al servidor para que envie el historial de mensajes */
+            function sendRecord() {
+                socket.emit('recordMessages',username);
+                return false;
+            }
+            /* Se recibe un mensaje del chat */
             socket.on('messages', function(msg){
                 if(msg.author==="<%=session.user.username%>"){/* Distinciion de mensajes propios o mensajes de otros usuarios*/
                     $('#messages').append($('<li class="mensaje_propio">').text(msg.text));
                 }else {
-                    $('#messages').append("<li class='mensaje_ajeno'><strong>"+msg.author+":</strong>"+msg.text+"</li>")/;
+                    $('#messages').append("<li class='mensaje_ajeno'><strong>"+msg.author+":</strong>"+msg.text+"</li>");
                 }
             });
-            socket.on('nuevo',function (username,mensajes) {
+            /* Se recibe una notificación de usuario nuevo */
+            socket.on('nuevo',function (username) {
                 /*Si el mensaje de 'nuevo' lo recibe otro usuario que estuviera conectado */
                 if("<%=session.user.username%>"!==username){
                     $('#messages').append("<li class='conectado'><strong>"+username +" se ha unido</sctrong></li>")/* Usuario_X se ha unido */;
-                }else{/*Si lo recibe el usuario que se ha conectado, mostramos el historial de mensajes*/
+                }
+            });
+            /* Se recibe una notificacion de historial */
+            socket.on('historial',function (username,mensajes) {
+                if("<%=session.user.username%>"===username){/*Si lo recibe el usuario que se ha conectado, mostramos el historial de mensajes*/
                     for (var i in mensajes){
                         var msg=mensajes[i];
                         if(msg.author==="<%=session.user.username%>"){
@@ -112,7 +124,6 @@
                         }
                     }
                 }
-
             });
 
 

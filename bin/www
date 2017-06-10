@@ -34,14 +34,16 @@ server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
 
+/* Chat */
 var io= require('socket.io').listen(server);
-var mensajes=[];
+var mensajes=[];/* Buffer con el historial de mensajes */
+
 io.on('connection', function(socket){
 
     socket.on('new',function (username) {
         console.log('Nuevo',username);
-        console.log('Historia de mensajes',mensajes);
-        io.emit('nuevo',username,mensajes);
+
+        io.emit('nuevo',username);
     });
 
 
@@ -50,6 +52,11 @@ io.on('connection', function(socket){
       io.emit('messages', msg);
       mensajes.push(msg);
 
+    });
+
+    socket.on('recordMessages',function (username) {
+        console.log('Historia de mensajes',mensajes);
+        io.emit('historial',username,mensajes);
     });
 
 });
