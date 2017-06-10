@@ -71,22 +71,17 @@
 
     <script>
             var socket = io();
-            /*$('form').submit(function(){
-                socket.emit('chat message', $('#msg').val());
-                $('#msg').val('');
-                return false;
-            });
-            socket.on('chat message', function(msg){
-                $('#messages').append($('<li>').text(msg));
-            });*/
+
             var username="<%=session.user.username%>";
             socket.emit('new',username);
+
             function sendNew() {
 
                 socket.emit('new',username);
                 username.val('');
                 return false;
             }
+
             function sendMsg(e) {
                 var msg={
                     author:"<%=session.user.username%>",
@@ -97,15 +92,25 @@
                 return false;
             }
             socket.on('messages', function(msg){
-                if(msg.author==="<%=session.user.username%>"){
+                if(msg.author==="<%=session.user.username%>"){/* Distinciion de mensajes propios o mensajes de otros usuarios*/
                     $('#messages').append($('<li class="mensaje_propio">').text(msg.text));
                 }else {
-                    $('#messages').append("<li class='mensaje_ajeno'><strong>"+msg.author+":</strong>"+msg.text+"</li>")/*.text(msg.author+':'+msg.text))*/;
+                    $('#messages').append("<li class='mensaje_ajeno'><strong>"+msg.author+":</strong>"+msg.text+"</li>")/;
                 }
             });
-            socket.on('nuevo',function (username) {
+            socket.on('nuevo',function (username,mensajes) {
+                /*Si el mensaje de 'nuevo' lo recibe otro usuario que estuviera conectado */
                 if("<%=session.user.username%>"!==username){
-                    $('#messages').append("<li class='conectado'><strong>"+username +" se ha unido</sctrong></li>")/*.text(username +' se ha unido'))*/;
+                    $('#messages').append("<li class='conectado'><strong>"+username +" se ha unido</sctrong></li>")/* Usuario_X se ha unido */;
+                }else{/*Si lo recibe el usuario que se ha conectado, mostramos el historial de mensajes*/
+                    for (var i in mensajes){
+                        var msg=mensajes[i];
+                        if(msg.author==="<%=session.user.username%>"){
+                            $('#messages').append($('<li class="mensaje_propio">').text(msg.text));
+                        }else {
+                            $('#messages').append("<li class='mensaje_ajeno'><strong>"+msg.author+":</strong>"+msg.text+"</li>");
+                        }
+                    }
                 }
 
             });

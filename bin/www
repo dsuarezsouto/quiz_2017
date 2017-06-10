@@ -40,7 +40,8 @@ io.on('connection', function(socket){
 
     socket.on('new',function (username) {
         console.log('Nuevo',username);
-        io.emit('nuevo',username);
+        console.log('Historia de mensajes',mensajes);
+        io.emit('nuevo',username,mensajes);
     });
 
 
