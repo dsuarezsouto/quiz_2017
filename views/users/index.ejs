@@ -65,7 +65,7 @@
         </form>
 
     <script>
-            var socket = io();
+
             var username="<%=session.user.username%>";
 
             if(!sessionStorage.conectado){/* Se ha conectado un nuevo usuario */
@@ -112,9 +112,18 @@
                     $('#messages').append("<li class='conectado'><strong>"+username +" se ha unido</sctrong></li>")/* Usuario_X se ha unido */;
                 }
             });
+
+            /* Se recibe una notificación de usuario desconectado */
+            socket.on('borrado',function (username) {
+                /*Si el mensaje de 'desconectado' lo recibe otro usuario que estuviera conectado */
+                if("<%=session.user.username%>"!==username){
+                    $('#messages').append("<li class='conectado'><strong>"+username +" se ha desconectado</sctrong></li>")/* Usuario_X se ha unido */;
+                }
+            });
+
             /* Se recibe una notificacion de historial */
             socket.on('historial',function (username,mensajes) {
-                if("<%=session.user.username%>"===username){/*Si lo recibe el usuario que se ha conectado, mostramos el historial de mensajes*/
+                if("<%=session.user.username%>"===username){/*Si lo recibe el usuario que se ha conectado, mostramos el historial de mensajes */
                     for (var i in mensajes){
                         var msg=mensajes[i];
                         if(msg.author==="<%=session.user.username%>"){

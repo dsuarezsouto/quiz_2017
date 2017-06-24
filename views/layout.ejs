@@ -28,10 +28,20 @@
                 <a href="/session">Login</a>
             <% } else { %>
                 <a href="/users/<%= session.user.id %>"><%= session.user.username %></a>
-                <a href="/session?_method=DELETE" >Logout</a>
+                <a href="/session?_method=DELETE" onclick="sendDisconnect()" >Logout</a>
             <% } %>
         </div>
-
+        <script>
+            var socket = io();
+            function sendDisconnect() {
+                var msg={
+                    author: "<%= session.user ? session.user.username :"undefined"%>"
+                };
+                socket.emit('desconectado', msg.author);
+                $('#msg').val('');
+                return false;
+            }
+        </script>
         <h1>Quiz<span class="no-narrow">: el juego de las preguntas</span></h1>
     </header>
 

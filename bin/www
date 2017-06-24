@@ -59,6 +59,11 @@ io.on('connection', function(socket){
         io.emit('historial',username,mensajes);
     });
 
+    socket.on('desconectado',function (msg) {
+        console.log('Usuario desconectado : ',msg);
+        io.emit('borrado',msg);
+    });
+
 });
 
 
