@@ -87,6 +87,7 @@
                     author:"<%=session.user.username%>",
                     text:$('#msg').val()
                 };
+                socket.emit('noTyping',msg.author);
                 socket.emit('chat message', msg);
                 $('#msg').val('');
                 return false;
@@ -146,15 +147,19 @@
             socket.on('tecleando',function (username) {
 
                 /*Si el mensaje de 'escribiendo' lo recibe otro usuario que estuviera conectado */
-                if("<%=session.user.username%>"!==username){
-                    $('#messages').append("<li class='conectado' id='<%=session.user.username%>'  ><strong>"+username +" está escribiendo </strong></li>")/* Usuario_X se ha unido */;
+                if ("<%= session.user.username %>" !== username) {
+                    $('#messages').append("<li class='conectado' id='<%= session.user.username %>'  ><strong>" + username + " está escribiendo </strong></li>")/* Usuario_X se ha unido */;
                 }
-            })
 
+            });
+            /* Se recibe una notificacion de que el usuario ya no esta escribiendo */
             socket.on('dejarTeclear',function (username) {
-                $('#<%=session.user.username%>').style.display='none';
-
-            })
+                /*Si el mensaje lo recibe otro usuario que estuviera conectado */
+                if ("<%= session.user.username %>" !== username) {
+                    /* Elimino el mensaje :Usuario_X esta escribiendo */
+                    document.getElementById("messages").removeChild(document.getElementById("<%= session.user.username %>"));
+                }
+            });
 
     </script>
         </div>
