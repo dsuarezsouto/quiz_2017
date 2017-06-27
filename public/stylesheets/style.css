@@ -245,3 +245,12 @@ a {
     background: white;
     font: 10px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
+.circulo{
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background-color: red;
+    margin-left: 70px;
+    margin-bottom: -7px;
+    display: none;
+}
