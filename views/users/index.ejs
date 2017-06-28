@@ -67,6 +67,9 @@
     <script>
 
             var username="<%=session.user.username%>";
+            /* Desaparece la notificacion de mensaje nuevo */
+            document.getElementById("circulo").style.display='none';
+
 
             if(!sessionStorage.conectado){/* Se ha conectado un nuevo usuario */
                  sendNew();/*Envio evento de nuevo usuario*/

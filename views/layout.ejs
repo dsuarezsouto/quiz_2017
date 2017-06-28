@@ -33,6 +33,7 @@
         </div>
         <script>
             var socket = io();
+
             function sendDisconnect() {
                 var msg={
                     author: "<%= session.user ? session.user.username :"undefined"%>"
@@ -41,6 +42,12 @@
                 $('#msg').val('');
                 return false;
             }
+            /* Si recibimos un mensaje cuando estamos en otra pagina que nos sea en la que se encuentra el Chat */
+            socket.on('messages', function(msg){
+               if(window.location.pathname!== "/users"){
+                   document.getElementById("circulo").style.display='block';
+               }
+            })
         </script>
         <h1>Quiz<span class="no-narrow">: el juego de las preguntas</span></h1>
     </header>
@@ -54,8 +61,10 @@
         <a href="/quizzes/randomplay">Jugar</a>
         <a href="/author">Créditos</a>
         <% if (session.user) { %>
-            <div class="circulo" id="circulo"></div>
-           <a href="/users">Usuarios</a>
+
+           <a href="/users">
+              Usuarios <div class="circulo" id="circulo"></div>
+           </a>
         <% } %>
         <a href="/ayuda">Ayuda</a>
     </nav>

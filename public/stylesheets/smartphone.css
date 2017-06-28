@@ -14,3 +14,6 @@ body {
 .no-narrow {
     display: none;
 }
+#chat{
+    width: 30%;
+}
